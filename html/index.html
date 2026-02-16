@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz QR Classroom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css?v=20260216c" />
+</head>
+<body>
+  <div class="bg-shape shape-a"></div>
+  <div class="bg-shape shape-b"></div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <h1 id="appTitle">Quiz QR Classroom</h1>
+    </header>
+
+    <section id="statusBanner" class="status-banner hidden"></section>
+
+    <section id="setupMissing" class="card hidden">
+      <h2>Missing configuration</h2>
+      <p>Fill in <code>js/config.js</code> with your Supabase project URL and anon key.</p>
+    </section>
+
+    <section id="hostView" class="stack hidden"></section>
+    <section id="studentView" class="stack hidden"></section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="../js/config.js?v=20260212a"></script>
+  <script src="../js/app.js?v=20260216q"></script>
+</body>
+</html>

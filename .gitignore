@@ -1,0 +1,11 @@
+# Exclusions requested for GitHub upload
+*.md
+!README.md
+*.ps1
+*.sh
+*.log
+*.txt
+
+# Local/system noise
+.DS_Store
+Thumbs.db
