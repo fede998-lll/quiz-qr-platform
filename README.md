@@ -35,6 +35,7 @@ The implementation focuses on predictable behavior, low-friction UX, and operati
 - Logout flow is session-aware: active sessions are explicitly closed before sign-out completion.
 - Host view state is restored after refresh to avoid losing operational context.
 - Participant admission is bound to valid active sessions; invalid/closed sessions are rejected.
+- Participant identity uses local persistence with URL fallback to keep completion state stable after refresh.
 - Client behavior is aligned with backend RLS constraints to keep access boundaries enforceable at data layer.
 
 ## Security Posture (Client/Platform Boundary)

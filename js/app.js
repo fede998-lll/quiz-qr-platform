@@ -6,6 +6,7 @@ const APP_TITLE_STORAGE_KEY = "quizqr_app_title";
 const DEBUG_LOG_STORAGE_KEY = "quizqr_debug_log_entries";
 const HOST_VIEW_PREF_STORAGE_KEY = "quizqr_host_view_pref";
 const DEBUG_LOG_MAX_ENTRIES = 600;
+const PARTICIPANT_TOKEN_QUERY_KEY = "pt";
 
 const avatars = [
   "icons/avatar/1.png",
@@ -1968,6 +1969,7 @@ async function closeHostSession() {
 
 async function renderStudentView() {
   ui.studentView.innerHTML = "";
+  syncStudentUrlParticipantToken();
 
   if (!state.student.sessionCode) {
     ui.studentView.innerHTML = `
@@ -1990,6 +1992,7 @@ async function renderStudentView() {
       const url = new URL(window.location.href);
       url.searchParams.set("mode", "student");
       url.searchParams.set("session", code);
+      url.searchParams.set(PARTICIPANT_TOKEN_QUERY_KEY, state.student.participantToken);
       window.history.replaceState({}, "", url);
       renderStudentView();
     });
@@ -2413,6 +2416,12 @@ function getSessionCodeFromUrl() {
   return code.trim().toUpperCase();
 }
 
+function getParticipantTokenFromUrl() {
+  const raw = new URLSearchParams(window.location.search).get(PARTICIPANT_TOKEN_QUERY_KEY) || "";
+  const token = raw.trim();
+  return isValidParticipantToken(token) ? token : "";
+}
+
 function enforceCanonicalEntryUrl() {
   const current = new URL(window.location.href);
   if (isSupabaseAuthCallbackUrl(current)) {
@@ -2426,11 +2435,15 @@ function enforceCanonicalEntryUrl() {
 
   const requestedMode = current.searchParams.get("mode");
   const requestedSession = (current.searchParams.get("session") || "").trim().toUpperCase();
+  const requestedParticipantToken = getParticipantTokenFromUrl();
   const isStudentRoute = requestedMode === "student" && isValidSessionCode(requestedSession);
 
   if (isStudentRoute) {
     target.searchParams.set("mode", "student");
     target.searchParams.set("session", requestedSession);
+    if (requestedParticipantToken) {
+      target.searchParams.set(PARTICIPANT_TOKEN_QUERY_KEY, requestedParticipantToken);
+    }
   } else {
     target.searchParams.set("mode", "host");
   }
@@ -2461,6 +2474,10 @@ function normalizePathname(pathname) {
 
 function isValidSessionCode(code) {
   return /^[A-Z0-9]{4,12}$/.test(String(code || "").trim().toUpperCase());
+}
+
+function isValidParticipantToken(token) {
+  return /^[A-Za-z0-9_-]{16,128}$/.test(String(token || "").trim());
 }
 
 function isSupabaseAuthCallbackUrl(urlObj) {
@@ -2517,8 +2534,16 @@ function isInAuthCallbackGraceWindow() {
 function getOrCreateParticipantToken() {
   const key = "quizqr_participant_token";
   const storage = getSafeStorage();
+  const fromUrl = getParticipantTokenFromUrl();
+  if (fromUrl) {
+    if (storage) {
+      storage.setItem(key, fromUrl);
+    }
+    return fromUrl;
+  }
+
   const existing = storage ? storage.getItem(key) : null;
-  if (existing) {
+  if (isValidParticipantToken(existing || "")) {
     return existing;
   }
   const token = generateToken();
@@ -2526,6 +2551,21 @@ function getOrCreateParticipantToken() {
     storage.setItem(key, token);
   }
   return token;
+}
+
+function syncStudentUrlParticipantToken() {
+  if (state.mode !== "student" || !state.student.sessionCode || !state.student.participantToken) {
+    return;
+  }
+  const current = new URL(window.location.href);
+  const currentToken = (current.searchParams.get(PARTICIPANT_TOKEN_QUERY_KEY) || "").trim();
+  if (currentToken === state.student.participantToken) {
+    return;
+  }
+  current.searchParams.set("mode", "student");
+  current.searchParams.set("session", state.student.sessionCode);
+  current.searchParams.set(PARTICIPANT_TOKEN_QUERY_KEY, state.student.participantToken);
+  window.history.replaceState({}, "", current.toString());
 }
 
 function generateToken() {
