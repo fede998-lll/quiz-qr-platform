@@ -68,19 +68,20 @@ beforeEach(() => {
 });
 
 describe("App", () => {
-  it("shows the host login screen for unauthenticated teachers", async () => {
+  it("shows the host login screen for unauthenticated users", async () => {
     renderApp("?mode=host");
     expect(await screen.findByText("Login")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign in with Google" })).toBeInTheDocument();
   });
 
-  it("shows access denied for authenticated users that are not teachers", async () => {
+  it("shows access denied for authenticated users without workspace access", async () => {
     renderApp("?mode=host", {
       authUser: { id: "user-1", email: "student@example.com" },
       isTeacher: false,
     });
     expect(await screen.findByText("Access denied")).toBeInTheDocument();
-    expect(screen.getByText(/student@example.com/i)).toBeInTheDocument();
+    expect(screen.getByText("Access not available")).toBeInTheDocument();
+    expect(screen.getByText(/not currently allowed to open this workspace/i)).toBeInTheDocument();
   });
 
   it("allows settings navigation while a session is still open", async () => {
