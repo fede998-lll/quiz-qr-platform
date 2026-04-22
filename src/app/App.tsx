@@ -37,12 +37,10 @@ export function App(props: AppProps) {
 function MissingConfiguration() {
   return (
     <main className="app-shell">
-      <section className="panel setup-panel">
-        <p className="eyebrow">Configuration required</p>
-        <h1>Supabase environment is missing</h1>
-        <p className="muted">
-          Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY before starting the app.
-        </p>
+      <section className="panel setup-panel app-message-panel">
+        <p className="eyebrow">Setup needed</p>
+        <h1>App setup is not complete</h1>
+        <p className="muted">Ask the workspace owner to finish setup, then reload the app.</p>
       </section>
     </main>
   );

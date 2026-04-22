@@ -510,7 +510,7 @@ export function HostApp(props: HostAppProps) {
 
   if (authState === "booting") {
     return (
-      <AppFrame title="Host workspace" subtitle="Preparing the teacher dashboard.">
+      <AppFrame title="Workspace" subtitle="Preparing your dashboard.">
         <LoadingState label={loadingLabel} />
       </AppFrame>
     );
@@ -536,9 +536,9 @@ export function HostApp(props: HostAppProps) {
 
   if (authState === "denied") {
     return (
-      <AppFrame title="Access denied" subtitle="This Google account is authenticated but not authorized as a teacher.">
-        <Panel title="Teacher whitelist required">
-          <p>{email ?? "Unknown email"} is not currently allowed by the `is_teacher()` rule.</p>
+      <AppFrame title="Access denied" subtitle="This account does not have access to the workspace.">
+        <Panel title="Access not available" className="app-message-panel">
+          <p>{email ?? "This account"} is not currently allowed to open this workspace.</p>
           <Button variant="secondary" onClick={() => void logout()}>
             Logout
           </Button>
@@ -948,7 +948,7 @@ export function HostApp(props: HostAppProps) {
           <div className="live-exit-help-dialog" role="dialog" aria-modal="true" aria-labelledby="live-exit-help-title">
             <h3 id="live-exit-help-title">You can return to this live session</h3>
             <p>
-              This session stays active while you move around the teacher workspace. Open Sessions and choose the current live session whenever you want to return.
+              This session stays active while you move around the workspace. Open Sessions and choose the current live session whenever you want to return.
             </p>
             <label className="live-exit-help-check">
               <input
