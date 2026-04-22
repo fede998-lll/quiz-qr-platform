@@ -1,11 +1,18 @@
-# Exclusions requested for GitHub upload
-*.md
-!README.md
-*.ps1
-*.sh
-*.log
-*.txt
-
-# Local/system noise
+node_modules/
+dist/
+playwright-report/
+test-results/
+.env
+.env.local
+.env.*.local
 .DS_Store
 Thumbs.db
+coverage/
+.tmp-vite/
+*.tsbuildinfo
+.claude/
+.codex/
+/supabase/
+*.log
+*.md
+!README.md
